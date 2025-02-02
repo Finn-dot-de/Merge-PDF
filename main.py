@@ -3,40 +3,40 @@ import re
 import PyPDF2
 
 def get_pdf_files():
-    """Sucht nach allen PDF-Dateien im aktuellen Verzeichnis."""
+    """Searches for all PDF files in the current directory."""
     return [f for f in os.listdir() if f.endswith(".pdf")]
 
 def sort_numerically_or_alphabetically(files):
-    """Sortiert die Dateien numerisch, falls möglich, ansonsten alphabetisch."""
+    """Sorts the files numerically if possible, otherwise alphabetically."""
     def extract_number(file):
-        match = re.search(r'\d+', file)  # Suche nach Zahlen im Dateinamen
+        match = re.search(r'\d+', file)  # Search for numbers in the filename
         return int(match.group()) if match else float('inf')
     
     return sorted(files, key=lambda x: (extract_number(x), x))
 
-def merge_pdfs(pdf_files, output_filename="zusammengefuegt.pdf"):
-    """Führt die PDF-Dateien in der angegebenen Reihenfolge zusammen."""
+def merge_pdfs(pdf_files, output_filename="merged.pdf"):
+    """Merges the PDF files in the specified order."""
     merger = PyPDF2.PdfMerger()
     
     for pdf in pdf_files:
         try:
             merger.append(pdf)
-            print(f"Füge hinzu: {pdf}")
+            print(f"Adding: {pdf}")
         except Exception as e:
-            print(f"Fehler beim Verarbeiten von {pdf}: {e}")
+            print(f"Error processing {pdf}: {e}")
     
     if pdf_files:
         merger.write(output_filename)
         merger.close()
-        print(f"Zusammengeführte Datei gespeichert als: {output_filename}")
+        print(f"Merged file saved as: {output_filename}")
     else:
-        print("Keine PDF-Dateien gefunden.")
+        print("No PDF files found.")
 
 def main():
     pdf_files = get_pdf_files()
     
     if not pdf_files:
-        print("Keine PDF-Dateien im aktuellen Verzeichnis gefunden.")
+        print("No PDF files found in the current directory.")
         return
     
     sorted_pdfs = sort_numerically_or_alphabetically(pdf_files)
